@@ -1,0 +1,180 @@
+diagrama de clases de la cafeteria: 
+explicación pedido La clase Pedido permite gestionar el estado y el historial de la compra, separando la selección de productos del proceso de facturación.
+
+---- sin proveedores -----
+@startuml
+class Cliente {
+  -nombre : String
+  -correo : String
+
+}
+
+class Producto {
+  -nombre : String
+  -precio : double
+  -imagen : String
+}
+
+class ItemCarrito {
+  -cantidad : int
+  -subtotal : double
+  +incrementar()
+  +disminuir()
+  +calcularSubtotal() : double
+}
+
+class Carrito {
+  -items : List<ItemCarrito>
+  -total : doublé
+  +agregarProducto(p : Producto)
+  +eliminarProducto(p : Producto)
+  +actualizarCantidad(p : Producto, cantidad : int)
+  +calcularTotal() : double
+}
+
+
+
+class Pedido {
+  -fecha : Date
+  -estado : String
+  -total : double
+  +confirmar()
+  +cancelar()
+  +cambiarEstado(nuevoEstado : String)
+}
+
+class Pago {
+  -monto : double
+  -metodo : MetodoPago
+  +setMetodoPago(m : MetodoPago)
+  +ejecutarPago() : boolean
+}
+
+interface MetodoPago {
+  +pagar(monto : double) : boolean
+}
+
+class PagoTransferencia {
+  +pagar(monto : double) : boolean
+}
+
+class PagoCredito {
+  +pagar(monto : double) : boolean
+}
+
+class Factura {
+  -subtotal : double
+  -impuesto : double
+  -descuento : double
+  -totalFinal : double
+  +calcularTotalFinal() : double
+}
+
+Pedido "1" *-- "1" Pago
+Pago --> MetodoPago
+
+MetodoPago <|.. PagoCredito
+MetodoPago <|.. PagoTransferencia
+Factura "1" -- "1" Pago
+
+Cliente "1" -- "1" Carrito
+Cliente "1" -- "1" Pedido
+Carrito "1" -- "*" ItemCarrito
+ItemCarrito "*" -- "1" Producto
+Carrito "1" --> "1" Pedido : genera
+@enduml
+
+
+
+---- con proveedores ------
+@startuml
+' --- Clases principales ---
+class Cliente {
+  -nombre : String
+  -correo : String
+}
+
+class Producto {
+  -nombre : String
+  -imagen : String
+}
+
+class Proveedor {
+  -nombre : String
+  -contacto : String
+}
+
+class ProductoProveedor {
+  -precio : double
+  -stock : int
+  -fechaInicio : Date
+  -fechaFin : Date
+}
+
+class ItemCarrito {
+  -cantidad : int
+  -subtotal : double
+  +incrementar()
+  +disminuir()
+  +calcularSubtotal() : double
+}
+
+class Carrito {
+  -items : List<ItemCarrito>
+  -total : double
+  +agregarProducto(pp : ProductoProveedor)
+  +eliminarProducto(pp : ProductoProveedor)
+  +actualizarCantidad(pp : ProductoProveedor, cantidad : int)
+  +calcularTotal() : double
+}
+
+class Pedido {
+  -fecha : Date
+  -estado : String
+  -total : double
+  +confirmar()
+  +cancelar()
+  +cambiarEstado(nuevoEstado : String)
+}
+
+class Pago {
+  -monto : double
+  -metodo : MetodoPago
+  +setMetodoPago(m : MetodoPago)
+  +ejecutarPago() : boolean
+}
+
+interface MetodoPago {
+  +pagar(monto : double) : boolean
+}
+
+class PagoTransferencia {
+  +pagar(monto : double) : boolean
+}
+
+class PagoCredito {
+  +pagar(monto : double) : boolean
+}
+
+class Factura {
+  -subtotal : double
+  -impuesto : double
+  -descuento : double
+  -totalFinal : double
+  +calcularTotalFinal() : double
+}
+
+Cliente "1" -- "1" Carrito
+Cliente "1" -- "1" Pedido
+Carrito "1" -- "*" ItemCarrito
+ItemCarrito "*" -- "1" ProductoProveedor
+ProductoProveedor "*" -- "1" Producto
+ProductoProveedor "*" -- "1" Proveedor
+
+Carrito "1" --> "1" Pedido : genera
+Pedido "1" *-- "1" Pago
+Pago --> MetodoPago
+MetodoPago <|.. PagoCredito
+MetodoPago <|.. PagoTransferencia
+Factura "1" -- "1" Pago
+@enduml

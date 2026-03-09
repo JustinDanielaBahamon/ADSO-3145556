@@ -1,0 +1,27 @@
+diagrama de secuencia 
+title Proceso de Compra y Pago
+
+actor Cliente
+participant Carrito
+participant Pedido
+participant Pago
+participant MetodoPago
+participant PagoCredito
+
+Cliente->Carrito: agregarProducto(producto, cantidad)
+Carrito->Carrito: calcularTotal()
+
+Cliente->Carrito: generarPedido()
+Carrito->Pedido: crearPedido(total)
+Carrito-->Cliente: pedidoCreado
+
+Cliente->Pago: setMetodoPago(PagoCredito)
+Pago->PagoCredito: asignarMetodo()
+
+Cliente->Pago: ejecutarPago()
+Pago->MetodoPago: pagar(monto)
+MetodoPago->PagoCredito: pagar(monto)
+PagoCredito-->Pago: true
+
+Pago->Pedido: cambiarEstado("Pagado")
+Pedido-->Cliente: confirmacionPago

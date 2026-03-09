@@ -1,0 +1,26 @@
+@startuml
+
+package "modelo" {
+  class Cliente
+  class Producto
+  class Carrito
+  class ItemCarrito
+  class Pedido
+  class Factura
+}
+
+package "pago" {
+  class Pago
+  interface MetodoPago
+  class PagoCredito
+  class PagoTransferencia
+  class Cuota
+}
+
+
+
+' Dependencias entre paquetes
+modelo ..> pago
+pago ..> modelo
+
+@enduml
